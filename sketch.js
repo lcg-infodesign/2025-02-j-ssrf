@@ -77,7 +77,8 @@ function setup (){
       // stessa cosa...
 
     // Disegno costellazione
-    disegnaCostellazione (posizioneX, posizioneY, dimensioneCella, numeroStelle, luminosita, compattezza, rotazione, scala);
+    disegnaCostellazione(posizioneX, posizioneY, dimensioneCella, numeroStelle, luminosita, compattezza, rotazione, scala, dati);
+    // aggiungo dati x poterlo usare nella funzione per chiamare dati colonne di riga spefica
 
     // AGGIORNO CONTATORI
     // arrivati a questo punto del codice ho disegnato costellazione 
@@ -94,4 +95,70 @@ function setup (){
 
 // poi: def. funz disegnacost. che generi posizione casuale ma sempre stessa x stessi valori (RandomSeed...)
 // mettendo ruota di "rotazione", scala di "scala" (prima traslate centro cella), 
-// genera luminosità (cerchi concentrici sempre + opachi) in base "luminosità"
+// genera luminosità (cerchi concentrici sempre + opachi) in base "luminosità" !!! non so come :,(
+
+
+function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compattezza, rotazione, scala, dati) {
+  push () // altrimenti trasformazioni si accumulanoooooo (risolto problemone)
+
+  translate(x + dimensione/2, y + dimensione/2);
+  // faccio sì che trasformazioni avvengano attorno al centro o con centro il centro della cella
+
+  rotate (rotazione);
+  // ruoto di variabile rotazione trovata nel setup
+
+  scale (scala)
+  // stessa cosa, scalo di "scala"
+
+
+  let stelle = []; // creo array in cui salvare dati x stelle
+
+  // genero posizioni stelle casuali ma fisse, uso RandomSeed, quindi devo far sì che stessa combo valori
+  // colonna 0,1,2,3,4 generi 1 numero univoco: valore colonna ha "riservate" due cifre n. univoco 
+  randomSeed(dati["column0"] * 100000000 + dati["column1"] * 1000000 + dati["column2"] * 10000 + dati["column3"] * 100 + dati["column4"] * 1);
+
+  // CICLO GENERO POSIZIONE E DIMENSIONE CASUALE
+  // ( ma coerente con i parametri definiti prima)
+  for (let i = 0; i < numStelle; i++) {
+
+    // ripeti ciclo tante volte quante n. stelle della costellazione
+    let angolo = random(TWO_PI)
+    // creo angoli casuali lungo i quali "spingere" le stelle
+    let estensione = dimensione * compattezza; 
+    // voglio che estensione dipenda da compattezza ma tenga in consid. la dimensione delle stelle
+    let distanza = random(estensione * 0.2, estensione);
+    // quanto effettivamente "spingo" le stelle, dipende da variabile estensione 
+    // cerco numero random tra estensione x 0,2 e estensione (20%-100%)
+    
+    // ora traduco questo ^ in coordinate
+    let stellaX = cos(angolo) * distanza;
+    // coseno uguale cat. adiacente fratto ipotenusa, distanza è ipotenusa
+    // quindi c.a./i x i = c.a. che è quello orizzontale, quindi coordinata x
+    let stellaY = sin(angolo) * distanza
+    // seno è uguale a cateto opposto fratto ipotenusa, 
+    // la distanza è appunto l'ipotenusa, 
+    // quindi c.o/i x i = c.o che è uguale alla coordinata y
+
+    let dimensioneStella = random(2, 5) * luminosita;
+    // vogloi dimensione random ma comunque che dipende da luminosià
+    
+    stelle.push({x: stellaX, y: stellaY, dimensione: dimensioneStella});
+    // pusho stella con sua posizione e dimensione nell'array creato prima
+  }
+
+  noStroke();
+
+  // FINALMENTE DISEGNO LE STELLEEEE
+  for (let i = 0; i < stelle.length; i++) {
+    // ripeto ciclo per tutti gli elementi dell'array "stelle"
+    let stella = stelle[i]; // prendi elemento n 1 dell'array stelle 
+    fill(255, 255, 240); 
+    circle(stella.x, stella.y, stella.dimensione); // uso dati generati 
+  }
+
+  pop ()
+}
+
+function draw () {
+// blabliblabla 
+}
