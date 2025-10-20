@@ -5,7 +5,7 @@ function preload () {
 }
 
 function setup (){
-  let margineEsterno = 20
+  let margineEsterno = 30
   let spaziatura = 15;
   let dimensioneCella = 80
 
@@ -14,12 +14,16 @@ function setup (){
     // floor serve arrotondare x difetto visto che divido 
     // larghezza schermo utilizzabile per dimensione celle, 
     // e se una viene divisa deve andare a capo
-  let righe = ceil(tabella.getRowCount() / colonne);
+  let righe = ceil(tabella.getRowCount() / colonne)
     // le righe sono tante quanto righe tabella / colonne arrotondato x eccesso
-  let altezzaTotale = margineEsterno * 2 + righe * dimensioneCella + (righe - 1) * spaziatura;
+  let larghezzaGriglia = colonne * dimensioneCella + (colonne - 1) * spaziatura;
+    // calcolo larghezza effettiva griglia x centrarla
+  let margineOrizzontale = (windowWidth - larghezzaGriglia) / 2;
+    // calcolo nuovo margine 
+    let altezzaTotale = margineEsterno * 2 + righe * dimensioneCella + (righe - 1) * spaziatura;
     // (se ho 8 righe, ci sono 7 spazi tra loro)
-  createCanvas(windowWidth, altezzaTotale);
-  background(10, 15, 30);
+  createCanvas(windowWidth, altezzaTotale)
+  background(10, 15, 30)
 
   // INIZIALIZZARE CONTATORI 
   let indiceColonna = 0;  // posizione nella griglia: quale colonna
@@ -70,15 +74,21 @@ function setup (){
     let scala = map(valoreScala, minScala, maxScala, 0.6, 1.2);
 
     // CALCOLO POSIZIONE NELLA GRIGLIA
-    let posizioneX = margineEsterno + indiceColonna * (dimensioneCella + spaziatura);
-      // posizione x è uguale a margine esterno + n° colonna in cui si trova oggetto x 
-      // spazio occupato da cella e spaziatura
-    let posizioneY = margineEsterno + indiceRiga * (dimensioneCella + spaziatura)
+      let posizioneX = margineOrizzontale + indiceColonna * (dimensioneCella + spaziatura);
+        // posizione x è uguale a margine esterno + n° colonna in cui si trova oggetto x 
+       // spazio occupato da cella e spaziatur
+      let posizioneY = margineEsterno + indiceRiga * (dimensioneCella + spaziatura)
       // stessa cosa...
 
     // Disegno costellazione
     disegnaCostellazione(posizioneX, posizioneY, dimensioneCella, numeroStelle, luminosita, compattezza, rotazione, scala, dati);
     // aggiungo dati x poterlo usare nella funzione per chiamare dati colonne di riga spefica
+    
+    // // Disegno bordo cella...
+    // noFill();
+    // stroke(255, 255, 255, 20); // bianco semi-trasparente
+    // strokeWeight(1);
+    // rect(posizioneX, posizioneY, dimensioneCella, dimensioneCella);
 
     // AGGIORNO CONTATORI
     // arrivati a questo punto del codice ho disegnato costellazione 
@@ -124,8 +134,9 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
     // ripeti ciclo tante volte quante n. stelle della costellazione
     let angolo = random(TWO_PI)
     // creo angoli casuali lungo i quali "spingere" le stelle
-    let estensione = dimensione * compattezza; 
+    let estensione = dimensione * compattezza * 0.65; 
     // voglio che estensione dipenda da compattezza ma tenga in consid. la dimensione delle stelle
+    // aggiungo 0,65 pk prima erano troppo sparse
     let distanza = random(estensione * 0.2, estensione);
     // quanto effettivamente "spingo" le stelle, dipende da variabile estensione 
     // cerco numero random tra estensione x 0,2 e estensione (20%-100%)
@@ -151,8 +162,8 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
   // FINALMENTE DISEGNO LE STELLEEEE
   for (let i = 0; i < stelle.length; i++) {
     // ripeto ciclo per tutti gli elementi dell'array "stelle"
-    let stella = stelle[i]; // prendi elemento n 1 dell'array stelle 
-    fill(255, 255, 240); 
+    let stella = stelle[i] // prendi elemento n 1 dell'array stelle 
+    fill(255, 255, 240)
     circle(stella.x, stella.y, stella.dimensione); // uso dati generati 
   }
 
@@ -161,4 +172,5 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
 
 function draw () {
 // blabliblabla 
+
 }
