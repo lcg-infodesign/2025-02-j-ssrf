@@ -88,7 +88,7 @@ function setup (){
     
     // Disegno bordo cella...
     noFill();
-    stroke(255, 255, 255, 20); // bianco semi-trasparente
+    stroke(255, 255, 255, 30); // bianco semi-trasparente
     strokeWeight(1);
     rect(posizioneX, posizioneY, dimensioneCella, dimensioneCella);
 
