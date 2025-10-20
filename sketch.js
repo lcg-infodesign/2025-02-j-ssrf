@@ -211,6 +211,7 @@ function disegnaTitolo () {
   textStyle (ITALIC)
   textAlign(LEFT, TOP);
   textSize(12);
+  textFont('Courier New');
 
   
   let descrizioneX = windowWidth / 2 + 40; // posizione X dopo la linea
