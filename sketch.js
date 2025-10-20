@@ -20,8 +20,9 @@ function setup (){
     // calcolo larghezza effettiva griglia x centrarla
   let margineOrizzontale = (windowWidth - larghezzaGriglia) / 2;
     // calcolo nuovo margine 
-    let altezzaTotale = margineEsterno * 2 + righe * dimensioneCella + (righe - 1) * spaziatura;
+  let altezzaTotale = 150 + margineEsterno * 2 + righe * dimensioneCella + (righe - 1) * spaziatura;
     // (se ho 8 righe, ci sono 7 spazi tra loro)
+    // aggiungo 150 per il titolo
   createCanvas(windowWidth, altezzaTotale)
   background(10, 15, 30)
 
@@ -45,12 +46,12 @@ function setup (){
       //  3 e 9, e poi trovare dove si posizione all'interno dell'intervalle 3-9 il valoreStelle, 
       // ovver il valore della funzione presa in cosnid.
 
-    // SECONDA VARIABILE: luminosità stelle
+    // SECONDA VARIABILE: luminosità stelle ( opacità )
     let valoreLuminosita = dati["column1"]; // stessa cosa sopra...
     let tutteLuminosita = tabella.getColumn("column1");
     let minLuminosita = min(tutteLuminosita);
     let maxLuminosita = max(tutteLuminosita);
-    let luminosita = map(valoreLuminosita, minLuminosita, maxLuminosita, 0.4, 1);
+    let luminosita = map(valoreLuminosita, minLuminosita, maxLuminosita, 0.2, 1);
 
     // TERZA VARIABILE: compattezza pos. stelle
     let valoreCompattezza = dati["column2"]; // stessa cosa sopra
@@ -77,14 +78,15 @@ function setup (){
       let posizioneX = margineOrizzontale + indiceColonna * (dimensioneCella + spaziatura);
         // posizione x è uguale a margine esterno + n° colonna in cui si trova oggetto x 
        // spazio occupato da cella e spaziatur
-      let posizioneY = margineEsterno + indiceRiga * (dimensioneCella + spaziatura)
+      let posizioneY = 150 + margineEsterno + indiceRiga * (dimensioneCella + spaziatura)
       // stessa cosa...
+      // 150 aggiunti per il titolo 
 
     // Disegno costellazione
     disegnaCostellazione(posizioneX, posizioneY, dimensioneCella, numeroStelle, luminosita, compattezza, rotazione, scala, dati);
     // aggiungo dati x poterlo usare nella funzione per chiamare dati colonne di riga spefica
     
-    // // Disegno bordo cella...
+    // Disegno bordo cella...
     // noFill();
     // stroke(255, 255, 255, 20); // bianco semi-trasparente
     // strokeWeight(1);
@@ -101,11 +103,46 @@ function setup (){
       // se indicecolonna diventa uguale a numero colonne nella pagina torno a 0 e aggiungo 1 a indiceriga
     }
   }
-}
+
+  // TITOLO (allineato a bandiera a destra)
+  fill(255, 255, 240);
+  noStroke();
+  textAlign(RIGHT, TOP);
+  textFont('sans-serif');
+  textSize(55);
+  textStyle(BOLD);
+  
+  let titoloX = windowWidth / 2 - 40; // posizione X del titolo (prima della linea)
+  let titoloY = 30; // posizione Y in alto
+  
+  text("second", titoloX, titoloY);
+  text("assignment", titoloX, titoloY + 45); // interlinea ridotta (45px invece di default)
+  
+  // LINEA VERTICALE
+  stroke(255, 255, 240);
+  strokeWeight(2);
+  line(windowWidth / 2, titoloY-10, windowWidth / 2, titoloY + 105); 
+  
+  // DESCRIZIONE
+  noStroke();
+  fill(255, 255, 240);
+  textStyle (ITALIC)
+  textAlign(LEFT, TOP);
+  textSize(12);
+  textFont('Georgia');
+  
+  let descrizioneX = windowWidth / 2 + 40; // posizione X dopo la linea
+  let descrizioneY = titoloY+10;
+  
+  textLeading(15); 
+
+  text("Ogni costellazione è generata dai dati di una riga del dataset CSV:\n• Column 0: Numero di stelle (3-9)\n• Column 1: Luminosità (opacità) delle stelle\n• Column 2: Compattezza della costellazione\n• Column 3: Rotazione\n• Column 4: Scala (dimensione)", descrizioneX, descrizioneY);
+
+} 
 
 // poi: def. funz disegnacost. che generi posizione casuale ma sempre stessa x stessi valori (RandomSeed...)
 // mettendo ruota di "rotazione", scala di "scala" (prima traslate centro cella), 
-// genera luminosità (cerchi concentrici sempre + opachi) in base "luminosità" !!! non so come :,(
+// genera luminosità (cerchi concentrici sempre + opachi) in base "luminosità" !!! non so come :,( --> semplificato in luminosità
 
 
 function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compattezza, rotazione, scala, dati) {
@@ -150,8 +187,8 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
     // la distanza è appunto l'ipotenusa, 
     // quindi c.o/i x i = c.o che è uguale alla coordinata y
 
-    let dimensioneStella = random(2, 5) * luminosita;
-    // vogloi dimensione random ma comunque che dipende da luminosià
+    let dimensioneStella = random(2, 5);
+    // vogloi dimensione random della stella
     
     stelle.push({x: stellaX, y: stellaY, dimensione: dimensioneStella});
     // pusho stella con sua posizione e dimensione nell'array creato prima
@@ -163,7 +200,8 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
   for (let i = 0; i < stelle.length; i++) {
     // ripeto ciclo per tutti gli elementi dell'array "stelle"
     let stella = stelle[i] // prendi elemento n 1 dell'array stelle 
-    fill(255, 255, 240)
+    // voglio che luminosità influenza l'opacità (quanto sono visibili le stelle)
+    fill(255, 255, 240, 255 * luminosita); // aggiungo 4° parametro per trasparenza
     circle(stella.x, stella.y, stella.dimensione); // uso dati generati 
   }
 
