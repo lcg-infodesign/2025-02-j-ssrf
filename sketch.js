@@ -72,7 +72,7 @@ function setup (){
     let tutteScale = tabella.getColumn("column4");
     let minScala = min(tutteScale);
     let maxScala = max(tutteScale);
-    let scala = map(valoreScala, minScala, maxScala, 0.6, 1.2);
+    let scala = map(valoreScala, minScala, maxScala, 0.6, 1.1);
 
     // CALCOLO POSIZIONE NELLA GRIGLIA
       let posizioneX = margineOrizzontale + indiceColonna * (dimensioneCella + spaziatura);
@@ -87,10 +87,10 @@ function setup (){
     // aggiungo dati x poterlo usare nella funzione per chiamare dati colonne di riga spefica
     
     // Disegno bordo cella...
-    // noFill();
-    // stroke(255, 255, 255, 20); // bianco semi-trasparente
-    // strokeWeight(1);
-    // rect(posizioneX, posizioneY, dimensioneCella, dimensioneCella);
+    noFill();
+    stroke(255, 255, 255, 20); // bianco semi-trasparente
+    strokeWeight(1);
+    rect(posizioneX, posizioneY, dimensioneCella, dimensioneCella);
 
     // AGGIORNO CONTATORI
     // arrivati a questo punto del codice ho disegnato costellazione 
@@ -103,41 +103,7 @@ function setup (){
       // se indicecolonna diventa uguale a numero colonne nella pagina torno a 0 e aggiungo 1 a indiceriga
     }
   }
-
-  // TITOLO (allineato a bandiera a destra)
-  fill(255, 255, 240);
-  noStroke();
-  textAlign(RIGHT, TOP);
-  textFont('sans-serif');
-  textSize(55);
-  textStyle(BOLD);
-  
-  let titoloX = windowWidth / 2 - 40; // posizione X del titolo (prima della linea)
-  let titoloY = 30; // posizione Y in alto
-  
-  text("second", titoloX, titoloY);
-  text("assignment", titoloX, titoloY + 45); // interlinea ridotta (45px invece di default)
-  
-  // LINEA VERTICALE
-  stroke(255, 255, 240);
-  strokeWeight(2);
-  line(windowWidth / 2, titoloY-10, windowWidth / 2, titoloY + 105); 
-  
-  // DESCRIZIONE
-  noStroke();
-  fill(255, 255, 240);
-  textStyle (ITALIC)
-  textAlign(LEFT, TOP);
-  textSize(12);
-  textFont('Georgia');
-  
-  let descrizioneX = windowWidth / 2 + 40; // posizione X dopo la linea
-  let descrizioneY = titoloY+10;
-  
-  textLeading(15); 
-
-  text("Ogni costellazione è generata dai dati di una riga del dataset CSV:\n• Column 0: Numero di stelle (3-9)\n• Column 1: Luminosità (opacità) delle stelle\n• Column 2: Compattezza della costellazione\n• Column 3: Rotazione\n• Column 4: Scala (dimensione)", descrizioneX, descrizioneY);
-
+  disegnaTitolo ()
 } 
 
 // poi: def. funz disegnacost. che generi posizione casuale ma sempre stessa x stessi valori (RandomSeed...)
@@ -194,6 +160,17 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
     // pusho stella con sua posizione e dimensione nell'array creato prima
   }
 
+  // linee collegamento tra stelle
+  stroke(255, 255, 240, 60 * luminosita); // trasparenza bassa ma che dipende da luminosità
+  strokeWeight(0.5);
+
+  for (let i = 0; i < stelle.length - 2; i++) {
+    // ciclo ripetuto n. stelle volte - 2 pk troppi collegamenti incasinati brutti
+    line(stelle[i].x, stelle[i].y, stelle[i+1].x, stelle[i+1].y);
+    // le linee collegano coordinate prima stella a coordinate sconda etc
+  }
+
+
   noStroke();
 
   // FINALMENTE DISEGNO LE STELLEEEE
@@ -206,6 +183,43 @@ function disegnaCostellazione (x, y, dimensione, numStelle, luminosita, compatte
   }
 
   pop ()
+}
+
+function disegnaTitolo () {
+   // TITOLO (allineato a bandiera a destra)
+  fill(255, 255, 240);
+  noStroke();
+  textAlign(RIGHT, TOP);
+  textFont('sans-serif');
+  textSize(55);
+  textStyle(BOLD);
+  
+  let titoloX = windowWidth / 2 - 40; // posizione X del titolo (prima della linea)
+  let titoloY = 40; // posizione Y in alto
+  
+  text("second", titoloX, titoloY);
+  text("assignment", titoloX, titoloY + 45); // interlinea ridotta (45px invece di default)
+  
+  // LINEA VERTICALE
+  stroke(255, 255, 240);
+  strokeWeight(2);
+  line(windowWidth / 2, titoloY, windowWidth / 2, titoloY + 105); 
+  
+  // DESCRIZIONE
+  noStroke();
+  fill(255, 255, 240);
+  textStyle (ITALIC)
+  textAlign(LEFT, TOP);
+  textSize(12);
+
+  
+  let descrizioneX = windowWidth / 2 + 40; // posizione X dopo la linea
+  let descrizioneY = titoloY+10;
+  
+  textLeading(15); 
+
+  text("Ogni costellazione è generata dai dati di una riga del dataset CSV:\n• Column 0: Numero di stelle (3-9)\n• Column 1: Luminosità (opacità) delle stelle\n• Column 2: Compattezza della costellazione\n• Column 3: Rotazione\n• Column 4: Scala (dimensione)", descrizioneX, descrizioneY);
+
 }
 
 function draw () {
